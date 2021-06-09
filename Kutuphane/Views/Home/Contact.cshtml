@@ -1,0 +1,64 @@
+﻿@{ ViewBag.Title = "İletişim";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml"; }
+
+<article id="post-39" class="post-39 page type-page status-publish hentry">
+    <header class="entry-header">
+        <h1 class="entry-title">İletişim</h1>
+    </header>
+
+    <div class="entry-content">
+
+
+        <p>
+
+            <div id="gmap_canvas" style="height:380px;width:100%;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48187.30476052801!2d28.61161359970101!3d40.98790620137693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b55fc19deb0b3b%3A0xdf4ea093f30983c6!2zQmV5bGlrZMO8esO8L8Swc3RhbmJ1bA!5e0!3m2!1str!2str!4v1616339399652!5m2!1str!2str" width="100%" height="380" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            <style>
+                #gmap_canvas img {
+                    max-width: none !important;
+                    background: none !important
+                }
+            </style>
+    </div>
+
+
+    <p>
+        <script type="text/javascript">function init_map() { var myOptions = { zoom: 10, center: new google.maps.LatLng(3.4000221, -76.387969), mapTypeId: google.maps.MapTypeId.ROADMAP }; map = new google.maps.Map(document.getElementById("gmap_canvas"), myOptions); marker = new google.maps.Marker({ map: map, position: new google.maps.LatLng(3.4000221, -76.387969) }); infowindow = new google.maps.InfoWindow({ content: "<strong>Jane Photography</strong><br />Florida Beach<br />" }); google.maps.event.addListener(marker, "click", function () { infowindow.open(map, marker); }); infowindow.open(map, marker); } google.maps.event.addDomListener(window, "load", init_map);</script>
+    </p>
+
+    <div class="wpcmsdev-columns">
+        <div class="column column-width-one-half">
+            <h4 style="font-weight:bold;">İletişim Formu</h4>
+
+            <form class="wpcf7" method="post" action="mailto:hanoguzakpinar@gmail.com?subject=İletişim" id="contactform" enctype="text/plain" >
+                <div class="form">
+                    <p><input type="text" name="isim" placeholder="İsim *" required></p>
+                    <p><input type="text" maxlength="10" name="Telefon" placeholder="Telefon * (0 olmadan)" required></p>
+                    <p><textarea name="Mesaj" rows="3" placeholder="Mesaj*" required></textarea></p>
+                    <input type="submit" id="submit" class="clearfix btn" value="Gönder">
+                </div>
+            </form>
+        </div>
+        <div class="column column-width-one-half">
+            <h4 style="font-weight:bold;">Bilgi</h4>
+            <p>
+                Telefon: 000 0 000
+            </p>
+            <p>
+                Mail: iletisim@kutuphane.com
+            </p>
+            <p>
+                Kütüphanemizin Açık Olduğu Saatler: 9:00 - 20:30
+            </p>
+
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Aliquam volutpat semper orci, a porttitor orci mattis faucibus. Nam tincidunt arcu eget feugiat rutrum.
+            </p>
+
+        </div>
+    </div>
+
+
+</article>

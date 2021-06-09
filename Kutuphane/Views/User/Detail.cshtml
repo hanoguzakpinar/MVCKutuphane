@@ -1,0 +1,121 @@
+﻿@model Kutuphane.Models.Entity.Users
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table {
+        font-size: 15px;
+        border-spacing: 15px;
+        border-collapse: separate;
+    }
+</style>
+
+<div>
+    <h4>Kullanıcı Detayı</h4>
+    <hr />
+    @Html.HiddenFor(model => model.ID)
+
+    <div>
+        @Html.ActionLink("Düzenle", "Update", new { id = Model.ID }, new { @class = "btn btn-primary" })
+        <a href="/User/Index" class="btn btn-primary">Kullanıcı Listesi</a>
+    </div>
+    <hr />
+
+    <table class="table table-bordered">
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">TC NO</th>
+            <td>
+                @Html.DisplayFor(model => model.Tc)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">İSİM</th>
+            <td>
+                @Html.DisplayFor(model => model.Adi)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">SOYADI</th>
+            <td>
+                @Html.DisplayFor(model => model.Soyadi)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DOĞUM TARİHİ</th>
+            <td>
+                @Html.DisplayFor(model => model.DogumTarihi)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DOĞUM YERİ</th>
+            <td>
+                @Html.DisplayFor(model => model.DogumYeri)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">TELEFON</th>
+            <td>
+                @Html.DisplayFor(model => model.Telefon)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ÜYELİK TARİHİ</th>
+            <td>
+                @Html.DisplayFor(model => model.UyelikTarihi)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">CİNSİYET</th>
+            <td>
+                @Html.DisplayFor(model => model.Cinsiyet)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ADRES</th>
+            <td>
+                @Html.DisplayFor(model => model.Adres)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">Email</th>
+            <td>
+                @Html.DisplayFor(model => model.Email)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KULLANICI ADI</th>
+            <td>
+                @Html.DisplayFor(model => model.Username)
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">Yetki</th>
+            <td>
+                @ViewBag.yetki
+            </td>
+        </tr>
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:15%; text-align:center;">Toplam Alınan Kitap</th>
+            <td>
+                @Html.DisplayFor(model => model.EmanetKitaplar.Count)
+            </td>
+        </tr>
+
+        </dl>
+    </table>
+</div>

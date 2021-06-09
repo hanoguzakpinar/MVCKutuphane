@@ -1,0 +1,83 @@
+﻿@model Kutuphane.Models.Entity.ViewEmanetKitaplar
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table {
+        font-size: 15px;
+        border-spacing: 15px;
+        border-collapse: separate;
+    }
+</style>
+
+<div>
+    <h4>Emanet Bilgileri</h4>
+    <hr />
+    @Html.HiddenFor(model => model.ID)
+
+    <div>
+        @Html.ActionLink("Düzenle", "Update", new { id = Model.ID }, new { @class = "btn btn-primary" })
+        <a href="/EmanetVer/Index" class="btn btn-primary">Emanet Listesi</a>
+    </div>
+    <hr />
+
+    <table class="table table-bordered">
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KİTAP</th>
+            <td>
+                @Html.DisplayFor(model => model.kitapAdi)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KULLANICI</th>
+            <td>
+                @Html.DisplayFor(model => model.kullaniciAdiSoyadi)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ALDIĞI TARİH</th>
+            <td>
+                @Html.DisplayFor(model => model.AldigiTarih)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">VERECEĞİ TARİH</th>
+            <td>
+                @Html.DisplayFor(model => model.VerecegiTarih)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">VERDİĞİ TARİH</th>
+            <td>
+                @Html.DisplayFor(model => model.VerdigiTarih)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">BORÇ</th>
+            <td>
+                @Html.DisplayFor(model => model.Borcu)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">TESLİM DURUMU</th>
+            <td>
+                @ViewBag.teslim
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">HASAR DURUMU</th>
+            <td>
+                @Html.DisplayFor(model => model.HasarDurumu)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">HASAR YERİ</th>
+            <td>
+                @Html.DisplayFor(model => model.HasarYeri)
+            </td>
+        </tr>
+    </table>
+</div>

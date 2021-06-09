@@ -1,0 +1,125 @@
+﻿@model Kutuphane.Models.Entity.EmanetKitaplar
+
+@{
+    ViewBag.Title = "Insert";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm("Insert", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2>Kitap Emanet Et</h2>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.KitapId, "KitapId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(k => k.KitapId, (List<SelectListItem>)ViewBag.kitapList, new { @class = "chosen-select form-control", id = "kitapDropDown" })
+                @Html.ValidationMessageFor(model => model.KitapId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.KullaniciId, "KullaniciId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(k => k.KullaniciId, (List<SelectListItem>)ViewBag.userList, new { @class = "chosen-select form-control", id = "userDropDown" })
+                @Html.ValidationMessageFor(model => model.KullaniciId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AldigiTarih, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.AldigiTarih, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @Value = @ViewBag.dateNow } })
+                @Html.ValidationMessageFor(model => model.AldigiTarih, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VerecegiTarih, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.VerecegiTarih, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @Value = @ViewBag.dateNext } })
+                @Html.ValidationMessageFor(model => model.VerecegiTarih, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <input type="button" id="insert" value="EKLE" class="btn btn-default" />
+            </div>
+        </div>
+
+        <div class="form-group" id="loadingBarinsert" style="text-align:center;">
+            <img src="~/Img/loading.svg" height="50" />
+        </div>
+    </div>
+}
+
+<hr />
+<div>
+    <a href="/EmanetVer/Index" class="btn btn-primary">Emanet Listesi</a>
+</div>
+
+
+
+<script type="text/javascript">
+    function load() {
+        $("#kitapDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+        $("#userDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+    };
+    load();
+
+
+    var isInsert = false;
+    $('#loadingBarinsert').hide();
+
+    $(document).ready(function () {
+        $('#insert').click(function () {
+            if (!isInsert) {
+                isInsert = true;
+                $('#loadingBarinsert').show();
+
+                $('#kitapDropDown').prop('disabled', true).trigger("chosen:updated");
+                $('#userDropDown').prop('disabled', true).trigger("chosen:updated");
+
+
+                var kitap = $('#kitapDropDown').val();
+                var kullanici = $('#userDropDown').val();
+                var lJson = {
+                    KitapId: kitap, KullaniciId: kullanici
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/EmanetVer/Insert",
+                    dataType: "json",
+                    data: lJson,
+                    success: function (data) {
+                        if (data.success == 0) {
+                            var it = $('#kitapDropDown').val();
+                            $("#kitapDropDown option[value='" + it + "']").hide();
+
+                            if (data.firstID != null) {
+                                $('#kitapDropDown').val(data.firstID);
+                            } else {
+                                $('#kitapDropDown').empty();
+                            }
+                            $('#kitapDropDown').trigger("chosen:updated");
+                        }
+
+                        $('#kitapDropDown').prop('disabled', false).trigger("chosen:updated");
+                        $('#userDropDown').prop('disabled', false).trigger("chosen:updated");
+
+                        myToastr(data);
+                        isInsert = false;
+                        $('#loadingBarinsert').hide();
+                    }
+                });
+            }
+        });
+    });
+
+</script>

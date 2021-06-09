@@ -1,0 +1,62 @@
+﻿@using Kutuphane.Models.Entity
+@using PagedList
+@using PagedList.Mvc
+@model PagedList.IPagedList<Kitap>
+
+@{
+    ViewBag.Title = "Kitaplar";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<div class="wpcmsdev-toggle">
+    <h3 class="toggle-title"><a href="#toggle-what-is-lore-ipsum"><i class="fa fa-plus icon-for-inactive"></i><i class="fa fa-minus icon-for-active"></i>Arama</a></h3>
+    <div id="toggle-what-is-lore-ipsum" class="toggle-content">
+        <p>
+            @using (Html.BeginForm("Kitaplar", "Home", FormMethod.Post))
+            {
+                <div class="form" style="display: flex;   align-items: center;">
+                    <input type="text" name="Adi" placeholder="Kitap Ad" required>
+                    <input type="submit" id="submit" class="clearfix btn" value="Ara" style="padding-top: 7px; padding-bottom: 7px; margin-left: 10px;">
+                </div>
+
+            }
+        </p>
+    </div>
+</div>
+
+
+
+<div id="content" class="site-content">
+    <div id="primary" class="content-area column full">
+        <main id="main" class="site-main">
+
+            <div class="grid portfoliogrid">
+
+                @foreach (var x in Model)
+                {
+                    <article class="hentry">
+                        <header class="entry-header">
+
+                            <div class="entry-thumbnail">
+                                <a href="/Home/Detay/@x.ID"><img src="@x.CiltTipi" style="height:350px;" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="p1" /></a>
+                            </div>
+                            <h2 class="entry-title"><a href="/Home/Detay/@x.ID" rel="bookmark">@x.Adi</a></h2>
+                            <p class="portfoliotype">
+                                @x.YayinEvi.Isim
+                            </p>
+
+                        </header>
+                    </article>
+
+                }
+
+
+            </div>
+
+            @Html.PagedListPager((IPagedList)Model, sayfa => Url.Action("Kitaplar", new { sayfa }))
+
+        </main>
+
+    </div>
+
+</div>

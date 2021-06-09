@@ -1,0 +1,203 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.Kategori>
+
+@{
+    ViewBag.Title = "Kategori İşlemleri";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+</style>
+
+<div class="h5">
+    <a href="/Kategori/Insert" class="btn btn-primary">Yeni Kategori Ekle</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th scope="col" style="width:10%; text-align: center;">DEWEY KODU</th>
+            <th scope="col" style="width:50%; ">KATEGORİ ADI</th>
+            <th scope="col" style="width:10%; text-align:center;">KİTAP SAYISI</th>
+            <th scope="col" style="width:15%; text-align:center;" class="tablebutton">KATEGORİ DÜZENLE</th>
+            <th scope="col" style="width:15%; text-align:center;" class="tablebutton">KATEGORİ SİL</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.ID">
+                <th scope="row" style="text-align:center;">@item.DeweyId</th>
+                <td>@item.Isim</td>
+                <td scope="row" style="text-align:center;">@item.Kitap.Count</td>
+                <td style="text-align:center;" class="tablebutton"><a href="/Kategori/Update/@item.ID" class="btn btn-success">Düzenle</a></td>
+                <td style="text-align:center;" class="tablebutton">
+                    <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="selectDeleteItem(@item.ID)">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+    @Html.PagedListPager(Model, page => Url.Action("Index", "Kategori", new { DeweyId = Request.Params["DeweyId"], Isim = Request.Params["Isim"], page }))
+</div>
+
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">KATEGORİ SİLİNİYOR!</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Kategoriyi Silmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarDelete" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" style="width: 80px;">İptal</a>
+                <input type="reset" value="Sil" class="btn btn-danger" id="btnDelete" onclick="deleteItem()" style="width: 80px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var selectedDeleteItemId;
+    $('#loadingBarDelete').hide();
+
+    var selectDeleteItem = function (localID) {
+        selectedDeleteItemId = localID;
+    }
+
+    function deleteItem() {
+        $('#loadingBarDelete').show();
+
+        $.ajax({
+            type: "POST",
+            url: "/Kategori/Delete",
+            data: { katID: selectedDeleteItemId },
+            success: function (data) {
+                myToastr(data);
+
+                if (data.success == 0) {
+                    $("#deleteModal").modal("hide");
+                    $("#row_" + selectedDeleteItemId).remove();
+                    $('#loadingBarDelete').hide();
+
+                    var totalitem = $('#totalItemCount').text() - 1;
+                    $('#totalItemCountText').text("Toplam " + totalitem + " Kayıt");
+                }
+            }
+        });
+    }
+
+</script>
+
+@using (Html.BeginForm("Index", "Kategori", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">KATEGORİ ARA</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Dewey Kodu</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("DeweyId", null, new { @class = "form-control", placeholder = "[0-9999]" })
+                                @*<input type="text" class="form-control" id="DeweyId" placeholder="[0-9999]"/>*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Kategori Adı</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Isim", null, new { @class = "form-control", placeholder = "Kategori Adı" })
+                                @*<input type="text" class="form-control" id="Isim" placeholder="Kategori Adı" />*@
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="btnSearch" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" id="btnSearch" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#DeweyId').val() == "" && $('#Isim').val() == "")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#DeweyId').val("");
+            $('#Isim').val("");
+            $('#indexClearFilter').hide();
+
+            window.location.href = "/Kategori";
+        }
+    }
+
+</script>

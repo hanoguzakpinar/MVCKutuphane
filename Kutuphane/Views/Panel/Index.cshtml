@@ -1,0 +1,114 @@
+﻿@model Kutuphane.Models.Entity.Users
+
+@{
+    ViewBag.Title = "Profil";
+    Layout = "~/Views/Shared/_LayoutPageUser.cshtml";
+    ViewBag.Sa = Session["İsim"].ToString() + " " + Session["Soyisim"].ToString();
+}
+
+<div>
+    <h4>Profil</h4>
+    <hr />
+    @using (Html.BeginForm("Index2", "Panel", FormMethod.Post))
+    {
+
+        //ViewBag.Sa = @Html.DisplayFor(x => x.Adi).ToString() + " " + @Html.DisplayFor(x => x.Soyadi).ToString();
+
+        <table class="table table-bordered">
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">TC NO</th>
+                <td>
+                    @Html.DisplayFor(x => x.Tc)
+                </td>
+            </tr>
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">İSİM</th>
+                <td>
+                    @Html.DisplayFor(x => x.Adi)
+                </td>
+            </tr>
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">SOYİSİM</th>
+                <td>
+                    @Html.DisplayFor(x => x.Soyadi)
+                </td>
+            </tr>
+
+
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ÜYELİK TARİHİ</th>
+                <td>
+                    @Html.DisplayFor(x => x.UyelikTarihi)
+                </td>
+            </tr>
+
+            @*<tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">CİNSİYET</th>
+                <td>
+                    @Html.DisplayFor(x => x.Cinsiyet)
+                </td>
+            </tr>*@
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">Email</th>
+                <td>
+                    @Html.DisplayFor(x => x.Email)
+                </td>
+            </tr>
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">TELEFON</th>
+                <td>
+                    @Html.TextBoxFor(x => x.Telefon, new { @class = "form-control", @required = "required", @type = "number" })
+                </td>
+            </tr>
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ADRES</th>
+                <td>
+                    @Html.TextBoxFor(x => x.Adres, new { @class = "form-control", @required = "required" })
+                </td>
+            </tr>
+
+            @*<tr>
+                    <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DOĞUM TARİHİ</th>
+                    <td>
+                        @Html.TextBoxFor(x => x.DogumTarihi)
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DOĞUM YERİ</th>
+                    <td>
+                        @Html.TextBoxFor(x => x.DogumYeri)
+                    </td>
+                </tr>*@
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KULLANICI ADI</th>
+                <td>
+                    @Html.TextBoxFor(x => x.Username, new { @class = "form-control", @required = "required" })
+                </td>
+            </tr>
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ŞİFRE</th>
+                <td>
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control", @required = "required" })
+                </td>
+            </tr>
+
+            <tr>
+                <th class="aligncenter" scope="col" style="width:10%; text-align:center;"></th>
+                <td>
+                    <button class="btn btn-warning">Güncelle</button>
+                </td>
+            </tr>
+
+        </table>
+    }
+</div>
+
+
+

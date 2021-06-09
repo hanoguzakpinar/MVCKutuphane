@@ -1,0 +1,322 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.Users>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    #table-bordered table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+
+        ._hide {
+            display: none;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+</style>
+
+<div class="h5">
+    <a href="/User/Insert" class="btn btn-primary">Yeni Kullanıcı Ekle</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        @*<th scope="col" style="width:10%; text-align:center;" class="_hide">YER NUMARASI</th>*@
+        <th scope="col" style="width:10%; text-align:center;">TC</th>
+        <th scope="col" style="width:25%;">İSİM SOYİSİM</th>
+        <th scope="col" style="width:12%; text-align:center;" class="_hide">TELEFON</th>
+        <th scope="col" style="width:13%; text-align:center;" class="_hide">ÜYELİK TARİHİ</th>
+        <th scope="col" style="width:10%; text-align:center;" class="_hide">CİNSİYET</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">ÜYE DETAY</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">ÜYE DÜZENLE</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">ÜYE SİL</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.ID">
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.Tc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adi) @Html.DisplayFor(modelItem => item.Soyadi)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.Telefon)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.UyelikTarihi)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.Cinsiyet)
+            </td>
+            <td class="aligncenter tablebutton"><a href="/User/Detail/@item.ID" class="btn btn-primary">Detay</a></td>
+            <td class="aligncenter tablebutton"><a href="/User/Update/@item.ID" class="btn btn-success">Düzenle</a></td>
+            <td class="aligncenter tablebutton">
+                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="selectDeleteItem(@item.ID)">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+
+    @* Burada url post değişkenlerini ayarla! *@
+    @Html.PagedListPager(Model, page => Url.Action("Index", "User", new
+{
+    Tc = Request.Params["Tc"],
+    Adi = Request.Params["Adi"],
+    Soyadi = Request.Params["AdSoyadii"],
+    MinDogumTarihi = Request.Params["MinDogumTarihi"],
+    MaxDogumTarihi = Request.Params["MaxDogumTarihi"],
+    MinUyelikTarihi = Request.Params["MinUyelikTarihi"],
+    MaxUyelikTarihi = Request.Params["MaxUyelikTarihi"],
+    Cinsiyet = Request.Params["Cinsiyet"],
+    Yetki = Request.Params["Yetki"],
+    page
+}).ToString())
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">KULLANICI SİLİNİYOR!</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Kullanıcıyı Silmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarDelete" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" style="width: 80px;">İptal</a>
+                <input type="reset" value="Sil" class="btn btn-danger" id="btnDelete" onclick="deleteItem()" style="width: 80px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var selectedDeleteItemId;
+    $('#loadingBarDelete').hide();
+
+    var selectDeleteItem = function (localID) {
+        selectedDeleteItemId = localID;
+    }
+
+    function deleteItem() {
+        $('#loadingBarDelete').show();
+
+        $.ajax({
+            type: "POST",
+            url: "/User/Delete",
+            data: { userId: selectedDeleteItemId },
+            success: function (data) {
+                myToastr(data);
+
+                if (data.success == 0) {
+                    $("#deleteModal").modal("hide");
+                    $("#row_" + selectedDeleteItemId).remove();
+                    $('#loadingBarDelete').hide();
+
+                    var totalitem = $('#totalItemCount').text() - 1;
+                    $('#totalItemCountText').text("Toplam " + totalitem + " Kayıt");
+                }
+            }
+        });
+    }
+
+</script>
+
+<!-- FILTER MODAL -->
+@using (Html.BeginForm("Index", "User", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">KULLANICILARI FİLTRELE</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+                        <div class="form-group">
+                            <span class="control-label col-md-3">TC</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Tc", null, new { @class = "form-control", placeholder = "TC NO", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">İSİM</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Adi", null, new { @class = "form-control", placeholder = "İsim", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">SOYİSİM</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Soyadi", null, new { @class = "form-control", placeholder = "Soyisim", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="form-group">
+                            <span class="control-label col-md-3">DOĞUM TARİHİ</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinDogumTarihi", null, new { @class = "form-control datepicker",
+                               placeholder = "Min Doğum Tarihi",
+                               onchange = "$(\"#MaxDogumTarihi\").datepicker('option', 'minDate', $(\"#MinDogumTarihi\").val())",
+                               autocomplete = "off"
+                           })
+                                <br/>
+                                @Html.TextBox("MaxDogumTarihi", null, new { @class = "form-control datepicker",
+                               placeholder = "Max Doğum Tarihi",
+                               onchange = "$(\"#MinDogumTarihi\").datepicker('option', 'maxDate', $(\"#MaxDogumTarihi\").val())",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <span class="control-label col-md-3">ÜYELİK TARİHİ</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinUyelikTarihi", null, new { @class = "form-control datepicker",
+                               placeholder = "Min Üyelik Tarihi",
+                               onchange = "$(\"#MaxUyelikTarihi\").datepicker('option', 'minDate', $(\"#MinUyelikTarihi\").val())",
+                               autocomplete = "off"
+                           })
+                                <br />
+                                @Html.TextBox("MaxUyelikTarihi", null, new { @class = "form-control datepicker",
+                               placeholder = "Max Üyelik Tarihi",
+                               onchange = "$(\"#MinUyelikTarihi\").datepicker('option', 'maxDate', $(\"#MaxUyelikTarihi\").val())",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                            <span class="control-label col-md-3">CİNSİYET</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("Cinsiyet", new List<SelectListItem> { new SelectListItem { Text = "Farketmez", Value = "-1" },
+                           new SelectListItem { Text="Erkek", Value="0" }, new SelectListItem { Text="Kadın", Value="1" }}, new { @class = "form-control", placeholder = "Cinsiyet" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">YETKİ</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("Yetki", new List<SelectListItem> { new SelectListItem { Text = "Farketmez", Value = "-1" }, new SelectListItem { Text="Kullanıcı", Value="0" }, new SelectListItem { Text="Personel", Value="1" }, new SelectListItem { Text="Yönetici", Value="2" }}, new { @class = "form-control", placeholder = "Yetki" })
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#Tc').val() == "" && $('#Adi').val() == "" && $('#Soyadi').val() == "" &&
+            $('#MinDogumTarihi').val() == "" && $('#MaxDogumTarihi').val() == "" && $('#MinUyelikTarihi').val() == "" &&
+            $('#MaxUyelikTarihi').val() == "" && $('#Cinsiyet').val() == "-1" && $('#Yetki').val() == "-1")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+
+
+        if (window.location.href.indexOf('%26') != -1 || window.location.href.indexOf('%3D') != -1) {
+            window.location.href = window.location.href.replace('%26', '&').replace('%3D', '=')
+        }
+
+        $(".datepicker").datepicker({
+            monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            dayNamesMin: ["Pa", "Pt", "Sl", "Ça", "Pe", "Cu", "Ct"],
+            firstDay: 1,
+            changeMonth: true,
+            changeYear: true,
+            maxDate: new Date(),
+            defaultDate: new Date(),
+            dateFormat: 'dd-mm-yy',
+            yearRange: '1900:2100'
+        });
+
+        $("#MinDogumTarihi").datepicker('option', 'maxDate', new Date(2000, 11, 31)).datepicker('option', 'maxDate', new Date(2012, 0, 0));
+        $("#MaxDogumTarihi").datepicker('option', 'maxDate', new Date(2014, 11, 31)).datepicker('option', 'maxDate', new Date(2012, 0, 0));
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#Tc').val();
+            $('#Adi').val();
+            $('#Soyadi').val();
+            $('#MinDogumTarihi').val();
+            $('#MaxDogumTarihi').val();
+            $('#MinUyelikTarihi').val();
+            $('#MaxUyelikTarihi').val();
+            $('#Cinsiyet').val("0");
+            $('#Yetki').val("0");
+
+            window.location.href = "/User";
+        }
+    }
+
+</script>

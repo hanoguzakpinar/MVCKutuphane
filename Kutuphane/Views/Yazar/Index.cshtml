@@ -1,0 +1,219 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.Yazar>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+</style>
+
+<div class="h5">
+    <a href="/Yazar/Insert" class="btn btn-primary">Yeni Yazar Ekle</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th scope="col" style="width:15%; text-align: center;">İSİM</th>
+        <th scope="col" style="width:15%; text-align: center;">SOYİSİM</th>
+        <th scope="col" style="width:40%;">HAKKINDA</th>
+        <th scope="col" style="width:10%; text-align:center;">KİTAP SAYISI</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">YAZAR DÜZENLE</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">YAZAR SİL</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.ID">
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.Isim)
+            </td>
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.Soyisim)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aciklama)
+            </td>
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.KitapYazarlari.Count)
+            </td>
+            <td class="aligncenter tablebutton"><a href="/Yazar/Update/@item.ID" class="btn btn-success">Düzenle</a></td>
+            <td class="aligncenter tablebutton">
+                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="selectDeleteItem(@item.ID)">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+    @Html.PagedListPager(Model, page => Url.Action("Index", "Yazar", new { Isim = Request.Params["Isim"], Soyisim = Request.Params["Soyisim"], Aciklama = Request.Params["Aciklama"], page }))
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">YAZAR SİLİNİYOR!</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Yazarı Silmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarDelete" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" style="width: 80px;">İptal</a>
+                <input type="reset" value="Sil" class="btn btn-danger" id="btnDelete" onclick="deleteItem()" style="width: 80px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var selectedDeleteItemId;
+    $('#loadingBarDelete').hide();
+
+    var selectDeleteItem = function (localID) {
+        selectedDeleteItemId = localID;
+    }
+
+    function deleteItem() {
+        $('#loadingBarDelete').show();
+
+        $.ajax({
+            type: "POST",
+            url: "/Yazar/Delete",
+            data: { ID: selectedDeleteItemId },
+            success: function (data) {
+                myToastr(data);
+
+                if (data.success == 0) {
+                    $("#deleteModal").modal("hide");
+                    $("#row_" + selectedDeleteItemId).remove();
+                    $('#loadingBarDelete').hide();
+
+                    var totalitem = $('#totalItemCount').text() - 1;
+                    $('#totalItemCountText').text("Toplam " + totalitem + " Kayıt");
+                }
+            }
+        });
+    }
+
+</script>
+
+<!-- FILTER MODAL -->
+@using (Html.BeginForm("Index", "Yazar", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">Yazar ARA</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+                        <div class="form-group">
+                            <span class="control-label col-md-3">İsim</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Isim", null, new { @class = "form-control", placeholder = "Yazar Adı" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Soyisim</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Soyisim", null, new { @class = "form-control", placeholder = "Kategori Adı" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Hakkında</span>
+                            <div class="col-md-6">
+                                @Html.TextArea("Aciklama", null, new { @class = "form-control", rows = "5", style = "min-height: 100px; min-width: 275px; max-width: 750px;", placeholder = "Hakkında bilgiler doğrum tarihi, doğrum yeri vb." })
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#Isim').val() == "" && $('#Soyisim').val() == "" && $('#Aciklama').val() == "")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#Isim').val("");
+            $('#Soyisim').val("");
+            $('#Aciklama').val("");
+            $('#indexClearFilter').hide();
+
+            window.location.href = "/Yazar";
+        }
+    }
+
+</script>

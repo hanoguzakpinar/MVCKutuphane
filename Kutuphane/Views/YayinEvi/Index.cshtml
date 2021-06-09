@@ -1,0 +1,195 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.YayinEvi>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+</style>
+
+<div class="h5">
+    <a href="/YayinEvi/Insert" class="btn btn-primary">Yeni Yayınevi Ekle</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th scope="col" style="width:60%;">İSİM</th>
+        <th scope="col" style="width:20%; text-align:center;">KİTAP SAYISI</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">YAYINEVİ DÜZENLE</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">YAYINEVİ SİL</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.ID">
+            <td>
+                @Html.DisplayFor(modelItem => item.Isim)
+            </td>
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.Kitap.Count)
+            </td>
+            <td class="aligncenter tablebutton"><a href="/YayinEvi/Update/@item.ID" class="btn btn-success">Düzenle</a></td>
+            <td class="aligncenter tablebutton">
+                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="selectDeleteItem(@item.ID)">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+    @Html.PagedListPager(Model, page => Url.Action("Index", "YayinEvi", new { Isim = Request.Params["Isim"], page }))
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">YAYINEVİ SİLİNİYOR!</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    YAYINEVİ'Nİ Silmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarDelete" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" style="width: 80px;">İptal</a>
+                <input type="reset" value="Sil" class="btn btn-danger" id="btnDelete" onclick="deleteItem()" style="width: 80px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var selectedDeleteItemId;
+    $('#loadingBarDelete').hide();
+
+    var selectDeleteItem = function (localID) {
+        selectedDeleteItemId = localID;
+    }
+
+    function deleteItem() {
+        $('#loadingBarDelete').show();
+
+        $.ajax({
+            type: "POST",
+            url: "/YayinEvi/Delete",
+            data: { ID: selectedDeleteItemId },
+            success: function (data) {
+                myToastr(data);
+
+                if (data.success == 0) {
+                    $("#deleteModal").modal("hide");
+                    $("#row_" + selectedDeleteItemId).remove();
+                    $('#loadingBarDelete').hide();
+
+                    var totalitem = $('#totalItemCount').text() - 1;
+                    $('#totalItemCountText').text("Toplam " + totalitem + " Kayıt");
+                }
+            }
+        });
+    }
+
+</script>
+
+<!-- FILTER MODAL -->
+@using (Html.BeginForm("Index", "YayinEvi", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">YAYINEVİ ARA</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Yayınevi Adı</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Isim", null, new { @class = "form-control", placeholder = "Yayınevi Adı" })
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#Isim').val() == "")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#Isim').val("");
+            $('#indexClearFilter').hide();
+
+            window.location.href = "/YayinEvi";
+        }
+    }
+
+</script>

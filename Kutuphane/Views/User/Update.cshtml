@@ -1,0 +1,215 @@
+﻿@model Kutuphane.Models.Entity.Users
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm("Update", "User", FormMethod.Post))
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ID)
+
+    <div class="form-horizontal">
+        <h2>Kullanıcı Bilgilerini Güncelle</h2>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tc, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Tc, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "TC Kimlik No" } })
+                @Html.ValidationMessageFor(model => model.Tc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Adi, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Adi, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "İsim" } })
+                @Html.ValidationMessageFor(model => model.Adi, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Soyadi, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Soyadi, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "Soyisim" } })
+                @Html.ValidationMessageFor(model => model.Soyadi, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DogumTarihi, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.DogumTarihi, new { htmlAttributes = new { @class = "form-control datepicker", autocomplete = "off", placeholder = "Doğrum Tarihi" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DogumYeri, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.DogumYeri, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "Doğum Yeri" } })
+                @Html.ValidationMessageFor(model => model.DogumYeri, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Telefon, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Telefon, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "05351234567" } })
+                @Html.ValidationMessageFor(model => model.Telefon, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cinsiyet, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.Cinsiyet, new List<SelectListItem> { new SelectListItem { Text = "Erkek", Value = "0" }, new SelectListItem { Text = "Kadın", Value = "1" } }, new { @class = "form-control", placeholder = "Cinsiyet" })
+                @Html.ValidationMessageFor(model => model.Cinsiyet, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Adres, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Adres, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "Uzun Adres" } })
+                @Html.ValidationMessageFor(model => model.Adres, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "kut@lib.com" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "Kullanıcı Adı" } })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", placeholder = "*****", type = "password" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Yetki, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.Yetki, new List<SelectListItem> { new SelectListItem { Text = "Kullanıcı", Value = "0" }, new SelectListItem { Text = "Personel", Value = "1" }, new SelectListItem { Text = "Yönetici", Value = "2" } }, new { @class = "form-control", placeholder = "Yetki" })
+                @Html.ValidationMessageFor(model => model.Yetki, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <a href="#" class="btn btn-default" data-toggle="modal" data-target="#updateModal">Değişiklikleri Kaydet</a>
+            </div>
+        </div>
+    </div>
+}
+
+<hr />
+<div>
+    <a href="/User/Index" class="btn btn-primary">Kitap Listesi</a>
+</div>
+
+<!-- UPDATE MODAL -->
+<div class="modal fade" id="updateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">KULLANICI BİLGİLERİ GÜNCELLENİYOR</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Değişiklikleri Kaydetmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarUpdate" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">İptal</a>
+                <input type="reset" value="Kaydet" class="btn btn-success" id="update" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var isClickUpdate = false;
+    $('#loadingBarUpdate').hide();
+    $('#Cinsiyet').val(@ViewBag.cinsiyet)
+
+    function load() {
+        $(".datepicker").datepicker({
+            monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            dayNamesMin: ["Pa", "Pt", "Sl", "Ça", "Pe", "Cu", "Ct"],
+            firstDay: 1,
+            changeMonth: true,
+            changeYear: true,
+            maxDate: new Date(),
+            defaultDate: new Date(),
+            dateFormat: 'dd-mm-yy',
+            yearRange: '1900:2100'
+        });
+    };
+    load();
+
+    $(document).ready(function () {
+        $('#update').click(function () {
+            if (!isClickUpdate) {
+                isClickUpdate = true;
+                $('#loadingBarUpdate').show();
+
+                var id = $('#ID').val();
+                var tc = $('#Tc').val();
+                var name = $('#Adi').val();
+                var soyadi = $('#Soyadi').val();
+                var dogumtarihi = $('#DogumTarihi').val();
+                var dogumyeri = $('#DogumYeri').val();
+                var telefon = $('#Telefon').val();
+                var cinsiyet = $('#Cinsiyet').val();
+                var email = $('#Email').val();
+                var username = $('#Username').val();
+                var pass = $('#Password').val();
+                var yetki = $('#Yetki').val();
+                var adres = $('#Adres').val();
+                var lJson = {
+                    Id: id, Tc: tc, Adi: name, Soyadi: soyadi, DogumTarihi: dogumtarihi, DogumYeri: dogumyeri, Telefon: telefon, Cinsiyet: cinsiyet,
+                    Email: email, Username: username, Password: pass, Yetki: yetki, Adres: adres
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/User/Update",
+                    dataType: "json",
+                    data: lJson,
+                    success: function (data) {
+                        myToastr(data);
+                        $("#updateModal").modal("hide");
+                        $('#loadingBarUpdate').hide();
+
+                        isClickUpdate = false;
+                    }
+                });
+            }
+        });
+    });
+</script>

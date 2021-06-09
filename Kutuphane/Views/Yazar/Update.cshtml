@@ -1,0 +1,116 @@
+﻿@model Kutuphane.Models.Entity.Yazar
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2>Yazar Bilgilerini Güncelle</h2>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-group">
+            <span class="control-label col-md-2">İsim</span>
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Isim, new { htmlAttributes = new { @class = "form-control", placeholder = "Yazar Adı" } })
+                @Html.ValidationMessageFor(model => model.Isim, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="control-label col-md-2">Soyisim</span>
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Soyisim, new { htmlAttributes = new { @class = "form-control", placeholder = "Yazar Soyadı" } })
+                @Html.ValidationMessageFor(model => model.Soyisim, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="control-label col-md-2">Hakkında</span>
+            <div class="col-md-3">
+                @Html.TextArea("Aciklama", null, new { @class = "form-control", rows = "5", style = "min-height: 100px; min-width: 275px; max-width: 750px;", placeholder = "Hakkında bilgiler doğrum tarihi, doğrum yeri vb." })
+                @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <a href="#" class="btn btn-default" data-toggle="modal" data-target="#updateModal">Değişiklikleri Kaydet</a>
+            </div>
+        </div>
+    </div>
+}
+
+<hr />
+<div>
+    <a href="/Yazar/Index" class="btn btn-primary">Yazar Listesi</a>
+</div>
+
+
+<!-- UPDATE MODAL -->
+<div class="modal fade" id="updateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">YAZAR BİLGİLERİ GÜNCELLENİYOR</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Değişiklikleri Kaydetmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarUpdate" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">İptal</a>
+                <input type="reset" value="Kaydet" class="btn btn-success" id="update" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var isClickUpdate = false;
+    $('#loadingBarUpdate').hide();
+
+    $(document).ready(function () {
+        $('#update').click(function () {
+            if (!isClickUpdate) {
+                isClickUpdate = true;
+                $('#loadingBarUpdate').show();
+
+                var id = $('#ID').val();
+                var name = $('#Isim').val();
+                var surname = $('#Soyisim').val();
+                var about = $('#Aciklama').val();
+                var lJson = { ID: id, Isim: name, Soyisim: surname, Aciklama: about };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Yazar/Update",
+                    dataType: "json",
+                    data: lJson,
+                    success: function (data) {
+                        myToastr(data);
+                        $("#updateModal").modal("hide");
+                        $('#loadingBarUpdate').hide();
+
+                        isClickUpdate = false;
+                    }
+                });
+            }
+        });
+    });
+</script>

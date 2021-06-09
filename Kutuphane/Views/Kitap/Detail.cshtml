@@ -1,0 +1,120 @@
+﻿@model Kutuphane.Models.Entity.Kitap
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table {
+        font-size: 15px;
+        border-spacing: 15px;
+        border-collapse: separate;
+    }
+</style>
+
+<div>
+    <h4>Kitap Detayı</h4>
+    <hr />
+    @Html.HiddenFor(model => model.ID)
+
+    <div>
+        @Html.ActionLink("Düzenle", "Update", new { id = Model.ID }, new { @class = "btn btn-primary" })
+        <a href="/Kitap/Index" class="btn btn-primary">Kitap Listesi</a>
+    </div>
+    <hr />
+
+    <table class="table table-bordered">
+
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ISBN</th>
+            <td>
+                @Html.DisplayFor(model => model.ISBN)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KİTAP ADI</th>
+            <td>
+                @Html.DisplayFor(model => model.Adi)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">ÇEVİRMEN</th>
+            <td>
+                @Html.DisplayFor(model => model.Cevirmen)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">SAYFA SAYISI</th>
+            <td>
+                @Html.DisplayFor(model => model.Sayfa)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">BASIM YILI</th>
+            <td>
+                @Html.DisplayFor(model => model.IlkBasimYili)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">EBAT-BOYUT</th>
+            <td>
+                @Html.DisplayFor(model => model.Ebat)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">BASIM YILI</th>
+            <td>
+                @Html.DisplayFor(model => model.BasimSayisi)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">KİTAP RESİM LİNKİ</th>
+            <td>
+                @Html.DisplayFor(model => model.CiltTipi)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DEWEY KOD</th>
+            <td>
+                @if (!string.IsNullOrEmpty(ViewBag.deweyName))
+                {
+                    @ViewBag.deweyName;
+                }
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">DİL</th>
+            <td>
+                @Html.DisplayFor(model => model.Dil.Isim)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">YAYINEVİ</th>
+            <td>
+                @Html.DisplayFor(model => model.YayinEvi.Isim)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">YAZAR</th>
+            <td>
+                @if (!string.IsNullOrEmpty(ViewBag.yazars))
+                {
+                    @ViewBag.yazars;
+                }
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">AÇIKLAMA</th>
+            <td>
+                @Html.DisplayFor(model => model.Aciklama)
+            </td>
+        </tr>
+        <tr>
+            <th class="aligncenter" scope="col" style="width:10%; text-align:center;">EMANETE UYGUNMU</th>
+            <td>
+                @ViewBag.emaneteUygunmu
+            </td>
+        </tr>
+    </table>
+</div>

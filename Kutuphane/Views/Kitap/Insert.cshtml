@@ -1,0 +1,205 @@
+﻿@model Kutuphane.Models.Entity.Kitap
+
+@{
+    ViewBag.Title = "Insert";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm("Insert", "Kitap", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h2>Yeni Kitap</h2>
+    <hr />
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>ISBN</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.ISBN, new { htmlAttributes = new { @class = "form-control", placeholder = "ÖRNEK: 123456789" } })
+            @Html.ValidationMessageFor(model => model.ISBN, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Kitap Adı</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Adi, new { htmlAttributes = new { @class = "form-control", placeholder = "ÖRNEK: İnce Memed" } })
+            @Html.ValidationMessageFor(model => model.Adi, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Dewey Kod - Kategori</b></span>
+        <div class="col-md-3">
+            @Html.DropDownListFor(k => k.DeweyKod, (List<SelectListItem>)ViewBag.katList, new { @class = "chosen-select form-control", id = "katDropDown" })
+            @Html.ValidationMessageFor(model => model.DeweyKod, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Yayınevi</b></span>
+        <div class="col-md-3">
+            @Html.DropDownListFor(k => k.YayinEviId, (List<SelectListItem>)ViewBag.yayineviList, new { @class = "chosen-select form-control", id = "yayineviDropDown" })
+            @Html.ValidationMessageFor(model => model.YayinEviId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Yazar</b></span>
+        <div class="col-md-3">
+            @Html.ListBoxFor(k => k.KitapYazarlari, (List<SelectListItem>)ViewBag.yazarList, new { @class = "chosen-select form-control", id = "yazarDropDown" })
+            @Html.ValidationMessageFor(model => model.KitapYazarlari, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Çevirmen</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Cevirmen, new { htmlAttributes = new { @class = "form-control", placeholder = "ÖRNEK: Orhan Pamuk, Elif Şafak, ..." } })
+            @Html.ValidationMessageFor(model => model.Cevirmen, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Sayfa Sayısı</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Sayfa, new { htmlAttributes = new { @class = "form-control", min = 1, placeholder = "..." } })
+            @Html.ValidationMessageFor(model => model.Sayfa, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Basım Yılı</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.IlkBasimYili, new { htmlAttributes = new { @class = "form-control", min = 1000, placeholder = "ÖRNEK: 1980" } })
+            @Html.ValidationMessageFor(model => model.IlkBasimYili, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Ebat-Boyut</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Ebat, new { htmlAttributes = new { @class = "form-control", placeholder = "ÖRNEK: 14x18" } })
+            @Html.ValidationMessageFor(model => model.Ebat, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Basım Sayısı</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.BasimSayisi, new { htmlAttributes = new { @class = "form-control", min = 1, placeholder = "..." } })
+            @Html.ValidationMessageFor(model => model.BasimSayisi, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Dil</b></span>
+        <div class="col-md-3">
+            @Html.DropDownListFor(k => k.DilId, (List<SelectListItem>)ViewBag.dilList, new { @class = "chosen-select form-control", id = "dilDropDown" })
+            @Html.ValidationMessageFor(model => model.DilId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Kitap Resim Linki</b></span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.CiltTipi, new { htmlAttributes = new { @class = "form-control", placeholder = "ÖRNEK: Hamur" } })
+            @Html.ValidationMessageFor(model => model.CiltTipi, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2"><b>Açıklama</b></span>
+        <div class="col-md-3">
+            @Html.TextArea("Aciklama", null, new { @class = "form-control", rows = "5", style = "min-height: 100px; min-width: 275px; max-width: 750px;", placeholder = "Hakkında, hasarlı bölge vs." })
+            @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <input type="button" id="insert" value="EKLE" class="btn btn-default" />
+        </div>
+    </div>
+
+    <div class="form-group" id="loadingBarinsert" style="text-align:center;">
+        <img src="~/Img/loading.svg" height="50" />
+    </div>
+</div>
+}
+
+<hr />
+<div>
+    <a href="/Kitap/Index" class="btn btn-primary">Kitap Listesi</a>
+</div>
+
+<script type="text/javascript">
+
+    function load() {
+        $("#katDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+        $("#yazarDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+        $("#yayineviDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+        $("#dilDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!" });
+    };
+    load();
+
+    var isInsert = false;
+    $('#loadingBarinsert').hide();
+
+    $(document).ready(function () {
+        $('#insert').click(function () {
+            if (!isInsert) {
+                isInsert = true;
+                $('#loadingBarinsert').show();
+
+                var id = $('#ISBN').val();
+                var name = $('#Adi').val();
+                var dewey = $('#katDropDown').val();
+                var yayinevi = $('#yayineviDropDown').val();
+                var yazarlar = $('#yazarDropDown').val();
+                var cevirmen = $('#Cevirmen').val();
+                var sayfasayisi = $('#Sayfa').val();
+                var basimYili = $('#IlkBasimYili').val();
+                var ebat = $('#Ebat').val();
+                var basimSayisi = $('#BasimSayisi').val();
+                var dil = $('#dilDropDown').val();
+                var cilt = $('#CiltTipi').val();
+                var aciklama = $('#Aciklama').val();
+                var lJson = {
+                    ISBN: id, Adi: name, DeweyKod: dewey, YayinEviId: yayinevi, yazarIds: yazarlar, Cevirmen: cevirmen, Sayfa: sayfasayisi,
+                    IlkBasimYili: basimYili, Ebat: ebat, BasimSayisi: basimSayisi, DilId: dil, CiltTipi: cilt, Aciklama: aciklama
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Kitap/Insert",
+                    dataType: "json",
+                    data: lJson,
+                    success: function (data) {
+                        if (data.success == 0) {
+                            $('#ISBN').val("");
+                            $('#Adi').val("");
+                            $('#katDropDown').val("");
+                            $('#yayineviDropDown').val("");
+                            $('#yazarDropDown').val("");
+                            $('#Cevirmen').val("");
+                            $('#Sayfa').val("");
+                            $('#IlkBasimYili').val("");
+                            $('#Ebat').val("");
+                            $('#BasimSayisi').val("");
+                            $('#dilDropDown').val("");
+                            $('#CiltTipi').val("");
+                            $('#Aciklama').val("");
+                        }
+
+                        myToastr(data);
+                        isInsert = false;
+                        $('#loadingBarinsert').hide();
+                    }
+                });
+            }
+        });
+    });
+
+</script>

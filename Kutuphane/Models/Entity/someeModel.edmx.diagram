@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6f4177374dbf422095125a3be5b7254f" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.Dil" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.EmanetKitaplar" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.Kategori" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.Kitap" Width="1.5" PointX="3" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.KitapYazarlari" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.Users" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.YayinEvi" Width="1.5" PointX="0.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.Yazar" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbLibrarySomeeModel.ViewEmanetKitaplar" Width="1.5" PointX="7.75" PointY="8.375" IsExpanded="true" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__Kitap__DilId__2A4B4B5E" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__EmanetKit__Kitap__398D8EEE" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__EmanetKit__Kulla__3A81B327" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__Kitap__DeweyKod__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__Kitap__YayinEviI__47DBAE45" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__KitapYaza__Kitap__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="dbLibrarySomeeModel.FK__KitapYaza__Yazar__30F848ED" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

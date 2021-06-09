@@ -1,0 +1,167 @@
+﻿@model Kutuphane.Models.Entity.ViewEmanetKitaplar
+
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm("Update", "EmanetVer", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.ID)
+
+<div class="form-horizontal">
+    <h2>Kitap Emanet Al</h2>
+    <hr />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.KitapId)
+    @Html.HiddenFor(model => model.KullaniciId)
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.kitapAdi, "KitapId", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(k => k.kitapAdi, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.kitapAdi, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.kullaniciAdiSoyadi, "KullaniciId", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(k => k.kullaniciAdiSoyadi, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.kullaniciAdiSoyadi, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AldigiTarih, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.AldigiTarih, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.AldigiTarih, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.VerecegiTarih, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.VerecegiTarih, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.VerecegiTarih, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.VerdigiTarih, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.VerdigiTarih, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @Value = @DateTime.Now.ToString("dd-MM-yyyy") } })
+            @Html.ValidationMessageFor(model => model.VerdigiTarih, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Borcu, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Borcu, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.Borcu, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.HasarDurumu, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.HasarDurumu, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.HasarDurumu, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.HasarYeri, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.HasarYeri, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.HasarYeri, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#updateModal">Değişiklikleri Kaydet</a>
+        </div>
+    </div>
+</div>
+}
+
+<hr />
+<div>
+    <a href="/EmanetVer/Index" class="btn btn-primary">Emanet Listesi</a>
+</div>
+
+<!-- UPDATE MODAL -->
+<div class="modal fade" id="updateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">KİTAP GERİ ALINIYOR</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Değişiklikleri Kaydetmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarUpdate" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">İptal</a>
+                <input type="reset" value="Kaydet" class="btn btn-success" id="update" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var isClickUpdate = false;
+    $('#loadingBarUpdate').hide();
+
+    $(document).ready(function () {
+        $('#update').click(function () {
+            if (!isClickUpdate) {
+                isClickUpdate = true;
+                $('#loadingBarUpdate').show();
+
+                var id = $('#ID').val();
+                var KitapId = $('#KitapId').val();
+                var KullaniciId = $('#KullaniciId').val();
+                var AldigiTarih = $('#AldigiTarih').val();
+                var VerecegiTarih = $('#VerecegiTarih').val();
+                var VerdigiTarih = $('#VerdigiTarih').val();
+                var Borcu = $('#Borcu').val();
+                var HasarDurumu = $('#HasarDurumu').val();
+                var HasarYeri = $('#HasarYeri').val();
+
+                var lJson = {
+                    Id: id, KitapId: KitapId, KullaniciId: KullaniciId, AldigiTarih: AldigiTarih, VerecegiTarih: VerecegiTarih, Borcu: Borcu, HasarDurumu: HasarDurumu, HasarYeri: HasarYeri, VerdigiTarih: VerdigiTarih
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/EmanetVer/Update",
+                    dataType: "json",
+                    data: lJson,
+                    success: function (data) {
+                        myToastr(data);
+                        $("#updateModal").modal("hide");
+                        $('#loadingBarUpdate').hide();
+
+                        isClickUpdate = false;
+                    }
+                });
+            }
+        });
+    });
+</script>

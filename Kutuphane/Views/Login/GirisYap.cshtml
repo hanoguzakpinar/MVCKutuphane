@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Giriş Yap";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<div class="wpcmsdev-columns">
+    <div class="column column-width-one-third">
+        &nbsp;
+    </div>
+    <div class="column column-width-one-third">
+        <h4 style="font-weight:bold;">Kullanıcı Girişi</h4>
+
+        @*<form class="wpcf7" method="post" action="~/Panel/Index" id="loginform">*@
+        @using (Html.BeginForm("GirisYap", "Login", FormMethod.Post, new { @class = "wpcf7" })) {
+            <div class="form">
+                <p><input type="text" name="Email" placeholder="Email Adresi" required></p>
+                <p><input type="password" name="Password" placeholder="Şifre" required></p>
+                <input type="submit" id="submit" class="clearfix btn" value="Giriş">
+            </div>
+        @*</form>*@
+        }
+
+        <p> <a href="/KayitOl/Kayit">Kayıt Ol</a></p>
+    </div>
+    <div class="column column-width-one-third">
+        &nbsp;
+        @if (ViewBag.Mesaj != null)
+        {
+            <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Mesaj");
+            };
+            </script>
+        }
+    </div>
+
+
+</div>
+
+<br />
+<br />
+<br />
+<br />

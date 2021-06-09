@@ -1,0 +1,92 @@
+﻿@model Kutuphane.Models.Entity.Yazar
+
+@{
+    ViewBag.Title = "Insert";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+<div class="form-horizontal">
+    <h2>Yeni Yazar Oluştur</h2>
+    <hr />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <span class="control-label col-md-2">Adı</span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Isim, new { htmlAttributes = new { @class = "form-control", placeholder = "Yazar Adı" } })
+            @Html.ValidationMessageFor(model => model.Isim, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2">Soyadı</span>
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Soyisim, new { htmlAttributes = new { @class = "form-control", placeholder = "Yazar Soyadı" } })
+            @Html.ValidationMessageFor(model => model.Soyisim, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="control-label col-md-2">Hakkında</span>
+        <div class="col-md-3">
+            @Html.TextArea("Aciklama", null, new { @class = "form-control", rows = "5", style = "min-height: 100px; min-width: 275px; max-width: 750px;", placeholder = "Hakkında bilgiler doğrum tarihi, doğrum yeri vb." })
+            @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <input type="button" id="insert" value="EKLE" class="btn btn-default" />
+        </div>
+    </div>
+
+    <div class="form-group" id="loadingBarinsert" style="text-align:center;">
+        <img src="~/Img/loading.svg" height="50" />
+    </div>
+</div>
+}
+
+<hr />
+<div>
+    <a href="/Yazar/Index" class="btn btn-primary">Yazar Listesi</a>
+</div>
+
+
+<script type="text/javascript">
+        var isInsert = false;
+        $('#loadingBarinsert').hide();
+
+        $(document).ready(function () {
+            $('#insert').click(function () {
+                if (!isInsert) {
+                    isInsert = true;
+                    $('#loadingBarinsert').show();
+
+                    var isim = $('#Isim').val();
+                    var soyisim = $('#Soyisim').val();
+                    var aciklama = $('#Aciklama').val();
+                    var lJson = { Isim: isim, Soyisim: soyisim, Aciklama: aciklama };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Yazar/Insert",
+                        dataType: "json",
+                        data: lJson,
+                        success: function (data) {
+                            if (data.success == 0) {
+                                $('#Isim').val("");
+                                $('#Soyisim').val("");
+                                $('#Aciklama').val("");
+                            }
+
+                            myToastr(data);
+                            isInsert = false;
+                            $('#loadingBarinsert').hide();
+                        }
+                    });
+                }
+            });
+        });
+</script>

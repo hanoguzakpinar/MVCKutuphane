@@ -1,0 +1,339 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.ViewEmanetKitaplar>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    #table-bordered table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+
+        ._hide {
+            display: none;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+</style>
+
+<div class="h5">
+    <a href="/EmanetVer/Insert" class="btn btn-primary">Emanet Ver</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th scope="col" style="width:18%;">KULLANICI</th>
+        <th scope="col" style="width:25%;">KİTAP</th>
+        <th scope="col" style="width:9%; text-align:center;" class="_hide">ALINAN TARİH</th>
+        <th scope="col" style="width:9%; text-align:center;" class="_hide">VERECEĞİ TARİH</th>
+        <th scope="col" style="width:9%; text-align:center;" class="_hide">VERDİĞİ TARİH</th>
+        <th scope="col" style="width:7%; text-align:center;" class="_hide">BORÇ</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">DETAY</th>
+        <th scope="col" style="width:15%; text-align:center;" class="tablebutton">EMANET AL</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.ID">
+            <td>
+                @Html.DisplayFor(modelItem => item.kullaniciAdiSoyadi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.kitapAdi)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.AldigiTarih)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.VerecegiTarih)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.VerdigiTarih)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.Borcu)
+            </td>
+            <td class="aligncenter tablebutton"><a href="/EmanetVer/Detail/@item.ID" class="btn btn-primary">Detay</a></td>
+            @if (item.TeslimDurumu == false)
+            {
+                <td class="aligncenter tablebutton"><a href="/EmanetVer/Update/@item.ID" class="btn btn-success">Emanet Al</a></td>
+            }
+            else
+            {
+                <td class="aligncenter tablebutton"><span disabled="disabled" class="btn btn-success">Emanet Al</span></td>
+            }
+        </tr>
+    }
+</table>
+
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+
+    @{
+        string bookids = Request.Params["filterBookIds"];
+        if (!string.IsNullOrEmpty(bookids))
+        {
+            bookids = Request.Params["filterBookIds"].Replace(",", "&filterBookIds=");
+        }
+
+        string userids = Request.Params["filterUserIds"];
+        if (!string.IsNullOrEmpty(userids))
+        {
+            userids = Request.Params["filterUserIds"].Replace(",", "&filterUserIds=");
+        }
+    }
+
+    @* Burada url post değişkenlerini ayarla! *@
+    @Html.PagedListPager(Model, page => Url.Action("Index", "EmanetVer",
+    new
+    {
+        filterBookIds = bookids,
+        filterUserIds = userids,
+        MinAldigiTarih = Request.Params["MinAldigiTarih"],
+        MaxAldigiTarih = Request.Params["MaxAldigiTarih"],
+        MinVerecegiTarih = Request.Params["MinVerecegiTarih"],
+        MaxVerecegiTarih = Request.Params["MaxVerecegiTarih"],
+        MinVerdigiTarih = Request.Params["MinVerdigiTarih"],
+        MaxVerdigiTarih = Request.Params["MaxVerdigiTarih"],
+        MinBorc = Request.Params["MinBorc"],
+        MaxBorc = Request.Params["MaxBorc"],
+        TeslimDurumu = Request.Params["TeslimDurumu"],
+        page
+    }).ToString())
+</div>
+
+
+<!-- FILTER MODAL -->
+@using (Html.BeginForm("Index", "EmanetVer", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">KİTAPLARI FİLTRELE</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">KİTAPLAR</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterBookIds, (List<SelectListItem>)ViewBag.bookList, new { @class = "form-control chosen-select", id = "bookDropDown", autocomplete = "off", })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">KULLANICILAR</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterUserIds, (List<SelectListItem>)ViewBag.userList, new { @class = "chosen-select form-control", id = "userDropDown", autocomplete = "off", })
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="form-group">
+                            <span class="control-label col-md-3">ALDIĞI TARİH</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinAldigiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Min Aldığı Tarih",
+                               onchange = "$(\"#MaxAldigiTarih\").datepicker('option', 'minDate', $(\"#MinAldigiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                                <br />
+                                @Html.TextBox("MaxAldigiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Max Aldığı Tarih",
+                               onchange = "$(\"#MinAldigiTarih\").datepicker('option', 'maxDate', $(\"#MaxAldigiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">VERECEĞİ TARİH</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinVerecegiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Min Vereceği Tarih",
+                               onchange = "$(\"#MaxVerecegiTarih\").datepicker('option', 'minDate', $(\"#MinVerecegiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                                <br />
+                                @Html.TextBox("MaxVerecegiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Max Vereceği Tarih",
+                               onchange = "$(\"#MinVerecegiTarih\").datepicker('option', 'maxDate', $(\"#MaxVerecegiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">VERDİĞİ TARİH</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinVerdigiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Min Verdiği Tarih",
+                               onchange = "$(\"#MaxVerdigiTarih\").datepicker('option', 'minDate', $(\"#MinVerdigiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                                <br />
+                                @Html.TextBox("MaxVerdigiTarih", null, new
+                                {
+                                    @class = "form-control datepicker",
+                               placeholder = "Max Vereceği Tarih",
+                               onchange = "$(\"#MinVerdigiTarih\").datepicker('option', 'maxDate', $(\"#MaxVerdigiTarih\").val())",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">BORÇ</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("MinBorc", null, new
+                                {
+                                    @class = "form-control",
+                               placeholder = "Min Borç",
+                               autocomplete = "off"
+                           })
+                                <br />
+                                @Html.TextBox("MaxBorc", null, new
+                                {
+                                    @class = "form-control",
+                               placeholder = "Max Borç",
+                               autocomplete = "off"
+                           })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">TESLİM EDİLME DURUMU</span>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(k => k.First().TeslimDurumu, new List<SelectListItem> { new SelectListItem { Text = "Farketmez", Value = "-1" }, new SelectListItem { Text = "Teslim Edilmemiş", Value = "0" }, new SelectListItem { Text = "Teslim Edilmiş", Value = "1" } }, new { @class = "chosen-select form-control", id = "teslimdurumu", autocomplete = "off", })
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#bookDropDown').val() == "" && $('#userDropDown').val() == "" && $('#MinAldigiTarih').val() == "" &&
+            $('#MinAldigiTarih').val() == "" && $('#MinVerecegiTarih').val() == "" && $('#MaxVerecegiTarih').val() == "" && 
+            $('#MinVerdigiTarih').val() == "" && $('#MaxVerdigiTarih').val() == "" && $('#MinBorc').val() == "" &&
+            $('#MaxBorc').val() == "" && $('#teslimdurumu').val() == "-1")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+
+        $("#bookDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Kitap Seçiniz' });
+        $("#userDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Kullanıcı Seçiniz' });
+
+        if (window.location.href.indexOf('%26') != -1 || window.location.href.indexOf('%3D') != -1) {
+            window.location.href = window.location.href.replace('%26', '&').replace('%3D', '=')
+        }
+
+
+        $(".datepicker").datepicker({
+            monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            dayNamesMin: ["Pa", "Pt", "Sl", "Ça", "Pe", "Cu", "Ct"],
+            firstDay: 1,
+            changeMonth: true,
+            changeYear: true,
+
+            defaultDate: new Date(),
+            dateFormat: 'dd-mm-yy',
+            yearRange: '1900:2100'
+        });
+
+
+        $("#MinAldigiTarih").datepicker('option', 'maxDate', new Date());
+        $("#MaxAldigiTarih").datepicker('option', 'maxDate', new Date());
+        $("#MinVerdigiTarih").datepicker('option', 'maxDate', new Date());
+        $("#MaxVerdigiTarih").datepicker('option', 'maxDate', new Date());
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#filterBookIds').val('').trigger('chosen:updated');
+            $('#filterUserIds').val('').trigger('chosen:updated');
+            $('#MinAldigiTarih').val('');
+            $('#MaxAldigiTarih').val('');
+            $('#MinVerecegiTarih').val('');
+            $('#MaxVerecegiTarih').val('');
+            $('#MinVerdigiTarih').val('');
+            $('#MaxVerdigiTarih').val('');
+            $('#MinBorc').val('');
+            $('#MaxBorc').val('');
+            $('#TeslimDurumu').val('0');
+
+
+            $('#indexClearFilter').hide();
+
+            window.location.href = "/EmanetVer";
+        }
+    }
+
+</script>

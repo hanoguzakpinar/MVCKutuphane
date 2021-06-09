@@ -1,0 +1,40 @@
+﻿@model Kutuphane.Models.Entity.Users
+
+@{
+    ViewBag.Title = "Kayıt Ol";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<div class="wpcmsdev-columns">
+    <div class="column column-width-one-third">
+        &nbsp;
+    </div>
+    <div class="column column-width-one-third">
+        <h4 style="font-weight:bold;">Kayıt Ol</h4>
+
+        <form method="post" action="#" class="wpcf7">
+            <div class="form">
+                <p><input type="text" name="Tc" placeholder="TC Kimlik" required maxlength="11"></p>
+                <p><input type="text" name="Adi" placeholder="İsim" required></p>
+                <p><input type="text" name="Soyadi" placeholder="Soyisim" required></p>
+                <p><input type="email" name="Email" placeholder="Email" required></p>
+                <p><input type="text" name="Telefon" placeholder="Telefon Numarası" required maxlength="11"></p>
+                <p><input type="text" name="Adres" placeholder="Adres" required/></p>
+                <p><input type="text" name="Username" placeholder="Kullanıcı Adı" required></p>
+                <p><input type="password" name="Password" placeholder="Şifre" required></p>
+                <input type="submit" id="submit" class="clearfix btn" value="Kayıt">
+            </div>
+        </form>
+    </div>
+    <div class="column column-width-one-third">
+        @if (ViewBag.Mesaj != null)
+        {
+            <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Mesaj");
+            };
+            </script>
+        }
+    </div>
+</div>
+

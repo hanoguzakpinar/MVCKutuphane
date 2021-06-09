@@ -1,0 +1,215 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@600;700&display=swap" rel="stylesheet">
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+    <link href="~/Content/Chosen/chosen.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/myScript.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+
+    <style>
+        body {
+            font-family: 'Advent Pro', sans-serif;
+            transition: background-color .5s;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 50px;
+            overflow: hidden;
+        }
+
+            .sidenav a {
+                padding: 16px 8px 16px 22px;
+                text-decoration: none;
+                font-size: 16px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+                .sidenav a.active {
+                    background-color: #313131;
+                    color: white;
+                }
+
+                .sidenav a:hover {
+                    color: #f1f1f1;
+                    background-color: #313131;
+                }
+
+            .sidenav .closebtn {
+                position: absolute;
+                top: 0;
+                font-size: 16px;
+                text-align: right;
+                padding-right: 25px;
+                width: 100%;
+                height: 50px;
+                background-color: #313131;
+                color: white;
+            }
+
+        #main {
+            transition: margin-left .5s;
+            margin-left: 50px;
+            padding: 16px;
+        }
+
+        .pagename {
+            padding-left: 20px;
+            font-family: 'Advent Pro', sans-serif;
+            position: absolute;
+            font-size: 17px;
+            white-space: nowrap;
+        }
+
+        @@media screen and (max-width: 650px) {
+        }
+    </style>
+
+</head>
+<body onload="onLoad()">
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="glyphicon glyphicon-align-justify closebtn" onclick="HideShowNav()"></a>
+        @*<a href="#" class="glyphicon glyphicon-home"><span class="pagename">Anasayfa</span></a>*@
+        <a href="/EmanetVer/Index" class="glyphicon glyphicon-share"><span class="pagename">Emanet İşlemleri</span></a>
+        <a href="/User/Index" class="glyphicon glyphicon-user"><span class="pagename">Kullanıcılar</span></a>
+        <a href="/Kitap/Index" class="glyphicon glyphicon-book"><span class="pagename">Kitaplar</span></a>
+        <a href="/Kategori/Index" class="glyphicon glyphicon-list"><span class="pagename">Kategoriler</span></a>
+        <a href="/Yazar/Index" class="glyphicon glyphicon-pencil"><span class="pagename">Yazarlar</span></a>
+        <a href="/Dil/Index" class="glyphicon glyphicon-text-color"><span class="pagename">Diller</span></a>
+        <a href="/YayinEvi/Index" class="glyphicon glyphicon-pushpin"><span class="pagename">Yayın Evi</span></a>
+
+
+        <a href="/Panel/Cikis" class="glyphicon glyphicon-remove-sign"><span class="pagename">Çıkış</span></a>
+    </div>
+
+    <div id="main">
+        @*<span id="opennav" style="font-size:30px;cursor:pointer; border:solid 1px; padding: 5px; display:block; width:50px; text-align:center; margin-bottom: 10px;" onclick="openNav()">&#9776;</span>*@
+        @RenderBody()
+    </div>
+
+    <script>
+        var aElements = document.getElementById('mySidenav').children;
+        var elements = document.getElementsByClassName("pagename");
+        var isOpen = false;
+
+        function HideShowNav() {
+            if (isOpen) {
+                isOpen = false;
+                closeNav();
+            }
+            else {
+                isOpen = true;
+                openNav();
+            }
+        }
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].style.display = '';
+            }
+
+            aElements[0].style.paddingRight = '16px';
+            aElements[0].style.textAlign = 'right';
+            for (var i = 1; i < aElements.length; i++) {
+                aElements[i].style.textAlign = 'left';
+                aElements[i].style.paddingLeft = '22px';
+            }
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "50px";
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].style.display = 'none';
+            }
+
+            aElements[0].style.paddingRight = '0px';
+            aElements[0].style.paddingLeft = '0px';
+            aElements[0].style.textAlign = 'center';
+
+            for (var i = 1; i < aElements.length; i++) {
+                aElements[i].style.textAlign = 'center';
+                aElements[i].style.paddingLeft = '0px';
+                aElements[i].style.paddingRight = '0px';
+            }
+        }
+
+
+        function onLoad() {
+            if (window.location.href.indexOf('Kitap') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-book'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('Kategori') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-list'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('Yazar') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-pencil'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('Dil') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-text-color'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('YayinEvi') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-pushpin'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('User') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-user'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('EmanetVer') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-share'))[0].classList.add("active");
+            }
+            else if (window.location.href.indexOf('EmanetAl') != -1) {
+                (document.getElementsByClassName('glyphicon glyphicon-check'))[0].classList.add("active");
+            }
+        }
+
+        closeNav();
+    </script>
+
+    <!--
+    @*<div class="sidebar">
+            <a href="#"><span class="glyphicon glyphicon-home">&nbsp; Anasayfa</span></a>
+            <a href="#"><span class="glyphicon glyphicon-book">&nbsp; Kitaplar</span></a>
+            <a class="active" href="#"><span class="glyphicon glyphicon-list">&nbsp; Kategoriler</span></a>
+            <a href="#"><span class="glyphicon glyphicon-pencil">&nbsp; Yazarlar</span></a>
+            <a href="#"><span class="glyphicon glyphicon-pushpin">&nbsp; Yayın Evi</span></a>
+            <a href="#"><span class="glyphicon glyphicon-user">&nbsp; Kullanıcılar</span></a>
+            <a href="#"><span class="glyphicon glyphicon-share">&nbsp; Ödünç Kitap Ver</span></a>
+            <a href="#"><span class="glyphicon glyphicon-check">&nbsp; Ödünç Kitap Al</span></a>
+            <a href="#"><span class="glyphicon glyphicon-remove-sign">&nbsp; Çıkış</span></a>
+        </div>*@
+
+    @*<div class="content">
+            @RenderBody()
+    </div>*@
+    -->
+</body>
+</html> 

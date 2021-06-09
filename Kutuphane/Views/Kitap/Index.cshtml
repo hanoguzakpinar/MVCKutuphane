@@ -1,0 +1,304 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Kutuphane.Models.Entity.Kitap>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<style>
+    table tbody tr td a {
+        width: 80px;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        table tbody tr td a {
+            width: 100%;
+        }
+
+        .tablebutton {
+            width: 10%;
+        }
+
+        ._hide {
+            display: none;
+        }
+    }
+
+    .close {
+        font-size: 40px;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+</style>
+
+<div class="h5">
+    <a href="/Kitap/Insert" class="btn btn-primary">Yeni Kitap Ekle</a>
+    <input type="button" data-toggle="modal" data-target="#filterModal" class="btn btn-primary" value="Filtrele" />
+    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" id="indexClearFilter" onclick="SearchItem(true)" style="width: 110px; display: none;" />
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        @*<th scope="col" style="width:10%; text-align:center;" class="_hide">YER NUMARASI</th>*@
+        <th scope="col" style="width:10%; text-align:center;">ISBN</th>
+        <th scope="col" style="width:30%;">KİTAP ADI</th>
+        <th scope="col" style="width:10%; text-align:center;" class="_hide">DEWEY KODU</th>
+        <th scope="col" style="width:12%; text-align:center;" class="_hide">DİL</th>
+        <th scope="col" style="width:12%; text-align:center;" class="_hide">YAYINEVİ</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">KİTAP DETAY</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">KİTAP DÜZENLE</th>
+        <th scope="col" style="width:10%; text-align:center;" class="tablebutton">KİTAP SİL</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.ID">
+            @*<td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.YerNumarasi)
+            </td>*@
+            <td class="aligncenter">
+                @Html.DisplayFor(modelItem => item.ISBN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adi)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.Kategori.DeweyId)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.Dil.Isim)
+            </td>
+            <td class="aligncenter _hide">
+                @Html.DisplayFor(modelItem => item.YayinEvi.Isim)
+            </td>
+            <td class="aligncenter tablebutton"><a href="/Kitap/Detail/@item.ID" class="btn btn-primary">Detay</a></td>
+            <td class="aligncenter tablebutton"><a href="/Kitap/Update/@item.ID" class="btn btn-success">Düzenle</a></td>
+            <td class="aligncenter tablebutton">
+                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="selectDeleteItem(@item.ID)">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="text-right">
+    <span class="hidden" id="totalItemCount">@Model.TotalItemCount.ToString()</span>
+    <span class="h4" id="totalItemCountText">Toplam @Model.TotalItemCount.ToString() Kayıt</span>
+    @{  
+        string dwids = Request.Params["filterDeweyIds"];
+        if (!string.IsNullOrEmpty(dwids))
+        {
+            dwids = Request.Params["filterDeweyIds"].Replace(",", "&filterDeweyIds=");
+        }
+
+        string yazarids = Request.Params["filterYazarIds"];
+        if (!string.IsNullOrEmpty(yazarids))
+        {
+            yazarids = Request.Params["filterYazarIds"].Replace(",", "&filterYazarIds=");
+        }
+
+        string yayineviids = Request.Params["filterYayineviIds"];
+        if (!string.IsNullOrEmpty(yayineviids))
+        {
+            yayineviids = Request.Params["filterYayineviIds"].Replace(",", "&filterYayineviIds=");
+        }
+
+        string dilids = Request.Params["filterDilIds"];
+        if (!string.IsNullOrEmpty(dilids))
+        {
+            dilids = Request.Params["filterDilIds"].Replace(",", "&filterDilIds=");
+        }
+
+    }
+
+    @* Burada url post değişkenlerini ayarla! *@
+    @Html.PagedListPager(Model, page => Url.Action("Index", "Kitap", new
+    {
+        Adi = Request.Params["Adi"],
+        ISBN = Request.Params["ISBN"],
+        filterDeweyIds = dwids,
+        filterYazarIds = yazarids,
+        filterYayineviIds = yayineviids,
+        filterDilIds = dilids,
+        page
+    }).ToString())
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">KİTAP SİLİNİYOR!</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-horizontal h4">
+                    Kitabı Silmek İstediğine Emin Misin?
+                </div>
+            </div>
+
+            <div class="form-group" id="loadingBarDelete" style="text-align:center;">
+                <img src="~/Img/loading.svg" height="50" />
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" style="width: 80px;">İptal</a>
+                <input type="reset" value="Sil" class="btn btn-danger" id="btnDelete" onclick="deleteItem()" style="width: 80px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var selectedDeleteItemId;
+    $('#loadingBarDelete').hide();
+
+    var selectDeleteItem = function (localID) {
+        selectedDeleteItemId = localID;
+    }
+
+    function deleteItem() {
+        $('#loadingBarDelete').show();
+
+        $.ajax({
+            type: "POST",
+            url: "/Kitap/Delete",
+            data: { kitapID: selectedDeleteItemId },
+            success: function (data) {
+                myToastr(data);
+
+                if (data.success == 0) {
+                    $("#deleteModal").modal("hide");
+                    $("#row_" + selectedDeleteItemId).remove();
+                    $('#loadingBarDelete').hide();
+
+                    var totalitem = $('#totalItemCount').text() - 1;
+                    $('#totalItemCountText').text("Toplam " + totalitem + " Kayıt");
+                }
+            }
+        });
+    }
+
+</script>
+
+<!-- FILTER MODAL -->
+@using (Html.BeginForm("Index", "Kitap", FormMethod.Get))
+{
+    <!-- FILTER MODAL -->
+    <div class="modal fade" id="filterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close h1" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">KİTAPLARI FİLTRELE</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal h4">
+                        <div class="form-group">
+                            <span class="control-label col-md-3">ISBN</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("ISBN", null, new { @class = "form-control", placeholder = "ISBN" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Kitap Adı</span>
+                            <div class="col-md-6">
+                                @Html.TextBox("Adi", null, new { @class = "form-control", placeholder = "Kitap Adı" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Kategori</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterDeweyIds, (List<SelectListItem>)ViewBag.katList, new { @class = "chosen-select form-control", id = "katDropDown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Yazar</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterYazarIds, (List<SelectListItem>)ViewBag.yazarList, new { @class = "chosen-select form-control", id = "yazarDropDown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Yayınevi</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterYayineviIds, (List<SelectListItem>)ViewBag.yayineviList, new { @class = "chosen-select form-control", id = "yayineviDropDown" })
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <span class="control-label col-md-3">Kitap Dili</span>
+                            <div class="col-md-6">
+                                @Html.ListBoxFor(k => k.First().filterDilIds, (List<SelectListItem>)ViewBag.dilList, new { @class = "chosen-select form-control", id = "dilDropDown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="loadingBarFilter" style="text-align:center;">
+                            <img src="~/Img/loading.svg" height="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" value="İptal" class="btn btn-default" data-dismiss="modal" style="width: 80px;" />
+                    <input type="button" value="Filtreyi Temizle" class="btn btn-danger" onclick="SearchItem(true)" style="width: 110px;" />
+                    <input type="submit" value="Filtrele" class="btn btn-success" onclick="SearchItem(false)" style="width: 80px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#loadingBarFilter').hide();
+    $('#indexClearFilter').hide();
+
+    function load() {
+        if ($('#Adi').val() == "" && $('#ISBN').val() == "" && $('#katDropDown').val() == "" &&
+            $('#yazarDropDown').val() == "" && $('#yayineviDropDown').val() == "" && $('#dilDropDown').val() == "")
+            $('#indexClearFilter').hide();
+        else
+            $('#indexClearFilter').show();
+        
+        $("#katDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Kategori Seçiniz' });
+        $("#yazarDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Yazar Seçiniz' });
+        $("#yayineviDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Yayınevi Seçiniz' });
+        $("#dilDropDown").chosen({ width: "100%", no_results_text: "Oops, sonuç yok!", 'placeholder_text_multiple': 'Dil Seçiniz' });
+
+        if (window.location.href.indexOf('%26') != -1 || window.location.href.indexOf('%3D') != -1) {
+            window.location.href = window.location.href.replace('%26', '&').replace('%3D', '=')
+        }
+    };
+    load();
+
+    function SearchItem(isClear) {
+        $('#loadingBarFilter').show();
+
+        if (isClear) {
+            $('#Adi').val("");
+            $('#ISBN').val("");
+            $('#katDropDown').val('').trigger('chosen:updated');
+            $('#yazarDropDown').val('').trigger('chosen:updated');
+            $('#yayineviDropDown').val('').trigger('chosen:updated');
+            $('#dilDropDown').val('').trigger('chosen:updated');
+            $('#indexClearFilter').hide();
+
+            window.location.href = "/Kitap";
+        }
+    }
+
+</script>

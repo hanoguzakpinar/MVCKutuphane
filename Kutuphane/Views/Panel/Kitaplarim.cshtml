@@ -1,0 +1,39 @@
+﻿@using Kutuphane.Models.Entity
+@model List<ViewEmanetKitaplar>
+
+@{
+    ViewBag.Title = "Kitap Geçmişim";
+    Layout = "~/Views/Shared/_LayoutPageUser.cshtml";
+    ViewBag.Sa = Session["İsim"].ToString() + " " + Session["Soyisim"].ToString();
+}
+
+<br />
+<h2>Kitap Geçmişim</h2>
+<br />
+<table class="table table-bordered">
+    <tr>
+        <th>Kitap Adı</th>
+        <th>Alış Tarihi</th>
+        <th>Teslim Durumu</th>
+    </tr>
+    @foreach (var k in Model)
+    {
+        <tr>
+            <td>@k.kitapAdi</td>
+            <td>@Convert.ToDateTime(k.AldigiTarih).ToString("dd/MM/yyyy")</td>
+            <td>
+
+                @if (k.TeslimDurumu == true)
+                {
+                     <p> Teslim Edildi.</p>
+                }
+                else
+                {
+                    <p>Teslim Edilmedi.</p>
+                }
+
+            </td>
+        </tr>
+    }
+</table>
+

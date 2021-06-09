@@ -1,0 +1,128 @@
+﻿@model Kutuphane.Models.Entity.Kitap
+
+@{
+    ViewBag.Title = "Kitap Detay";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+
+<div id="container">
+    <div id="content" role="main">
+
+        <div itemscope itemtype="http://schema.org/Product" class="product">
+
+            <div class="images" style="float:left; margin-right:20px; margin-bottom:5px;">
+                <a href="" itemprop="image" class="woocommerce-main-image zoom" title="" data-rel="prettyPhoto">
+                    <img src="@Html.DisplayFor(k=>k.CiltTipi)" style="width:250px;height:400px;">
+                </a>
+            </div>
+
+            <div class="summary entry-summary">
+
+                <h1 itemprop="name" class="product_title entry-title">@Html.DisplayFor(k => k.Adi)</h1>
+                <br />
+                <div class="woocommerce-product-rating" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+
+                    <p class="woocommerce-review-link" rel="nofollow">
+                        <b>Yazar(lar):</b>
+                        <span itemprop="reviewCount" class="count">
+                            @if (!string.IsNullOrEmpty(ViewBag.yazars))
+                            {
+                                @ViewBag.yazars;
+                            }
+                        </span>
+                        </a>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Yayınevi:</b>
+                        @Html.DisplayFor(model => model.YayinEvi.Isim)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Çevirmen:</b>
+                        @Html.DisplayFor(model => model.Cevirmen)
+                    </p>
+                </div>
+
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Dil:</b>
+                        @Html.DisplayFor(model => model.Dil.Isim)
+                    </p>
+                </div>
+                <br />
+
+
+                <div itemprop="description">
+                    <p>
+                        <b>Sayfa Sayısı:</b>
+                        @Html.DisplayFor(model => model.Sayfa)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Basım Yılı:</b>
+                        @Html.DisplayFor(model => model.IlkBasimYili)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>ISBN:</b>
+                        @Html.DisplayFor(model => model.ISBN)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Ebat:</b>
+                        @Html.DisplayFor(model => model.Ebat)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Basım Sayısı:</b>
+                        @Html.DisplayFor(model => model.BasimSayisi)
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Dewey Kodu:</b>
+                        @if (!string.IsNullOrEmpty(ViewBag.deweyName))
+                        {
+                            @ViewBag.deweyName;
+                        }
+                    </p>
+                </div>
+                <br />
+
+
+                <div itemprop="description">
+                    <p>
+                        <b>Emanete Uygunluk:</b>
+                        @ViewBag.emaneteUygunmu
+                    </p>
+                </div>
+                <br />
+                <div itemprop="description">
+                    <p>
+                        <b>Özet:</b>
+                        @Html.DisplayFor(model => model.Aciklama)
+                    </p>
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-# Kutuphane
+# Kütüphane
 
 Kütüphane Otomasyonu - Lisans bitirme projesi - 2021
 

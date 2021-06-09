@@ -2,7 +2,7 @@
 
 Kütüphane Otomasyonu - Lisans bitirme projesi - 2021
 
-asp.net mvc , mssql
+asp.net mvc , mssql , responsive
 
 Creators : 
 [hanoguzhanakpinar](https://github.com/hanoguzakpinar)
